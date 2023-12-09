@@ -1,0 +1,31 @@
+#feed-posts h4 {
+  color: white;
+}
+
+#posts-list-container {
+  color: white;
+}
+
+#posts-list-container li {
+  height: auto;
+  width: 200px;
+  background-color: gray;
+  display: flex;
+  flex-direction: column;
+  margin-top: 4px;
+}
+
+#posts-list-container li .post-content {
+  color: black;
+  font-size: 20px;
+  font-weight: 600;
+  font-family: sans-serif;
+}
+
+#posts-list-container li .post-comments {
+  margin-top: 20px;
+}
+
+#posts-list-container li .post-comments input {
+  padding: 10px 12px;
+}
