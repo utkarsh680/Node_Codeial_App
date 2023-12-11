@@ -14,7 +14,7 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, done) {
       //find the user
-      const user = await User.findOne({ email: profile.email[0].value });
+      const user = await User.findOne({ email: profile.emails[0].value });
       if (user) {
         //if found, set this user as req.user
         return done(null, user);
