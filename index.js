@@ -1,5 +1,5 @@
 const express = require('express');
-
+const multer = require('multer');
 const cookieParser = require('cookie-parser')
 const app = express();
 const port = 8000;
@@ -45,7 +45,17 @@ app.set('layout extractScripts', true)
 // set up the view engine
 app.set('view engine', 'ejs');
 app.set('views', './views')
-
+// Configure multer to handle image uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname));
+    },
+  });
+  
+  const upload = multer({ storage: storage });
 app.use(session({
     name: 'codeial',
 

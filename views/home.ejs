@@ -2,7 +2,7 @@
 <h1>home page/ <%= title %></h1>
 <section id="feed-posts">
   <h4>Posts</h4>
-  <form action= "/posts/create" , id="new-post-form" method="POST">
+  <form action="/posts/create" , id="new-post-form" method="POST">
     <textarea
       name="content"
       id=""
@@ -16,11 +16,14 @@
     <ul>
       <% for(post of posts){ %>
       <li>
-        <div class="post-content"><%= post.content %></div>
+        <div class="post-content">
+          <% if(locals.user && locals.user.id == post.user.id){ %>
+          <small><a href="/posts/destroy/<%= post.id %>">X</a></small>
+          <% } %> <%= post.content %>
+        </div>
         <div class="post-user">
-          <% if (post.user) { %> 
-          <%= post.user.name %> 
-          <% } else { %> User not available <% } %>
+          <% if (post.user) { %> <%= post.user.name %> <% } else { %> User not
+          available <% } %>
         </div>
         <div class="post-comments">
           <% if (locals.user){ %>
@@ -40,14 +43,13 @@
             <ul id="post-comments-<%= post._id %>">
               <% for (comment of post.comments) {%>
               <p>
-                <%= comment.content %>
+                <% if(locals.user && locals.user.id == comment.user.id){ %>
+                <small><a href="/comments/destroy/<%= comment.id %>">X</a></small>
+                <% } %> <%= comment.content %>
                 <br />
                 <small>
-                  <% if (comment.user) { %> 
-                  <%= comment.user.name %> 
-                  <% } else { %>
-                  User not available 
-                  <% } %>
+                  <% if (comment.user) { %> <%= comment.user.name %> <% } else {
+                  %> User not available <% } %>
                 </small>
               </p>
               <% } %>
