@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const User = require('../models/user');
 
 module.exports.home = async function (req, res) {
   try {
@@ -11,9 +12,11 @@ module.exports.home = async function (req, res) {
         path: 'user'
       }
     })
+    const user = await User.find({}).exec();
     return res.render("home", {
       title: "Codeial | Home",
-      posts: posts
+      posts: posts,
+      all_users: user
     });
    
   } catch (err) {
