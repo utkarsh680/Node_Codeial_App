@@ -2,17 +2,39 @@ const User = require("../models/user");
 
 module.exports.profile = async function (req, res) {
   const user = await User.findById(req.params.id);
-  console.log('hello',user)
+  console.log("hello", user);
   return res.render("user_profile", {
     title: "User Profile",
-    profile_user : user
+    profile_user: user,
   });
 };
 
+// update profile
+
+module.exports.update = async function (req, res) {
+  try {
+    if (req.user.id === req.params.id) {
+      const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+      if (!updatedUser) {
+        // User with the given ID not found
+        return res.status(404).send('User not found');
+      }
+
+      return res.redirect('back');
+    } else {
+      // User is unauthorized
+      return res.status(401).send('Unauthorized');
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+    return res.status(500).send('Internal Server Error');
+  }
+};
 //render the
 module.exports.signUp = function (req, res) {
   if (req.isAuthenticated()) {
-   return  res.redirect("/users/profile");
+    return res.redirect("/users/profile");
   }
   return res.render("user_sign_up", {
     title: "Codeial | Sign Up",
@@ -55,14 +77,12 @@ module.exports.createSession = async function (req, res) {
 };
 //module.exports.action = function(req, res){}
 
-
 //for destroy the function
-module.exports.destroySession = function(req, res){
-  req.logout(function(err){
-    if(err){
-      return console.log(err)
+module.exports.destroySession = function (req, res) {
+  req.logout(function (err) {
+    if (err) {
+      return console.log(err);
     }
-    return res.redirect('/users/sign-in');
+    return res.redirect("/users/sign-in");
   });
-  
-}
+};

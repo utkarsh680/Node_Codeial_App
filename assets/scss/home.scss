@@ -1,11 +1,22 @@
-#feed-posts {
+#home-container {
+  color: white;
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  #feed-posts {
+    width: 80%;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    margin-left: 400px;
     h4 {
       color: white;
     }
   }
   #posts-list-container {
     color: white;
-    
+
     li {
       height: auto;
       width: 200px;
@@ -16,14 +27,26 @@
       .post-content {
         color: rgb(0, 0, 0);
         font-size: 20px;
-        font-weight:600;
+        font-weight: 600;
         font-family: sans-serif;
       }
-      .post-comments{
+      .post-comments {
         margin-top: 20px;
-        input{
+        input {
           padding: 10px 12px;
         }
       }
     }
   }
+  #user-friends {
+    color: white;
+    width: 20%;
+    height: 75%;
+    border-left: 2px solid grey;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    
+  }
+}
