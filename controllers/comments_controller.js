@@ -11,6 +11,7 @@ module.exports.create = async function (req, res) {
         post: req.body.postId,
         user: req.body.userId,
       });
+      req.flash("success", "Comment Created Successfully!");
       post.comments.push(comment);
       post.save();
 
@@ -18,6 +19,7 @@ module.exports.create = async function (req, res) {
     }
   } catch (err) {
     console.error("Error in creating a post", err);
+    req.flash("error", "Error in creating Comment!");
   }
 };
 module.exports.destroy = async function (req, res) {
@@ -27,13 +29,15 @@ module.exports.destroy = async function (req, res) {
       console.log(comment)
     //  .id means converting object id into strings
       if (comment.user == req.user.id) {
-          await comment.deleteOne();;
+          await comment.deleteOne();
+          req.flash("success", "Comment Deleted Successfully!");
           return res.redirect('back');
       } else {
           return res.redirect('back');
       }
   } catch (err) {
       console.error(err);
+      req.flash("error", "Error in Deleting comment!");
       return res.status(500).send('Internal Server Error');
   }
 };
