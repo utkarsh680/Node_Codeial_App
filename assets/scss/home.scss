@@ -20,7 +20,7 @@
     li {
       height: auto;
       width: 200px;
-      background-color: gray;
+      
       display: flex;
       flex-direction: column;
       margin-top: 4px;
@@ -32,9 +32,11 @@
       }
       .post-comments {
         margin-top: 20px;
+        margin-left: 50px;
         input {
           padding: 10px 12px;
         }
+   
       }
     }
   }

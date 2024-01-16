@@ -25,7 +25,6 @@
 #home-container #posts-list-container li {
   height: auto;
   width: 200px;
-  background-color: gray;
   display: flex;
   flex-direction: column;
   margin-top: 4px;
@@ -40,6 +39,7 @@
 
 #home-container #posts-list-container li .post-comments {
   margin-top: 20px;
+  margin-left: 50px;
 }
 
 #home-container #posts-list-container li .post-comments input {
