@@ -11,7 +11,14 @@
         url: "/posts/create",
         data: newPostForm.serialize(),
         success: function (data) {
-          console.log(data);
+          new Noty({
+            theme: "relax",
+            text: "Post created successfully!",
+            type: "success",
+            layout: "topCenter",
+            timeout: 1000,
+            className: "custom-notification-class", // Add your custom class here
+          }).show();
           let newPost = newPostDom(data.data.post);
           $("#posts-list-container>ul").prepend(newPost);
           deletePost($(" .delete-post-button", newPost));
@@ -74,6 +81,14 @@
         type: "get",
         url: $(deleteLink).prop("href"),
         success: function (data) {
+          new Noty({
+            theme: "relax",
+            text: "Post deleted successfully!",
+            type: "success",
+            layout: "topCenter",
+            timeout: 1000,
+            className: "custom-notification-class", // Add your custom class here
+          }).show();
           $(`#post-${data.data.post_id}`).remove();
         },
         error: function (error) {
@@ -82,6 +97,45 @@
       });
     });
   };
+  let createComment = function () {
+    let newCommentForm = $("#new-comment-form");
+
+    newCommentForm.submit(function (e) {
+      e.preventDefault();
+
+      $.ajax({
+        type: "post",
+        url: "/comments/create",
+        data: newCommentForm.serialize(),
+        success: function (data) {
+          console.log(data)
+          let newComment = newCommentDom(data.data.comment);
+          $("#post-comments-list>ul").prepend(newComment);
+        },
+        error: function (error) {
+          console.log("hi", error.responseText);
+        },
+      });
+    });
+  };
+
+  // Method to create a comment in DOM
+  let newCommentDom = function (comment) {
+    return $(`
+    <li>
+    <p>
+      
+      <small><a href="/comments/destroy/${comment._id}">X</a></small>
+      ${comment.content}
+      <br />
+      <small>
+      ${comment.user.name} 
+      </small>
+    </p>
+  </li>
+  `);
+  };
+  // createComment();
 
   createPost();
 }

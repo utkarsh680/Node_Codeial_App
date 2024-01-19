@@ -19,15 +19,30 @@ module.exports.update = async function (req, res) {
         req.body,
         { new: true }
       );
+      User.uploadedAvatar(req, res, function (err) {
+        if (err) {
+          console.log("**MulterError", err);
+        }
+        updatedUser.name = req.user.name,
+        updatedUser.email = req.user.email
 
-      if (!updatedUser) {
-        // User with the given ID not found
-        return res.status(404).send("User not found");
-      }
+        if(req.file){
+          //this is saveing the path of the uploded file into the avatar field in the use
+          updatedUser.avatar = User.avatarPath + '/' + req.file.filename
+        }
+        updatedUser.save();
+        return res.redirect('back');
+      });
 
-      return res.redirect("back");
+      // if (!updatedUser) {
+      //   // User with the given ID not found
+      //   return res.status(404).send("User not found");
+      // }
+
+      // return res.redirect("back");
     } else {
       // User is unauthorized
+      req.flash("error", "Unauthorized");
       return res.status(401).send("Unauthorized");
     }
   } catch (error) {

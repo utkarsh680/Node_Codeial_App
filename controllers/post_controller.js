@@ -16,7 +16,7 @@ module.exports.create = async function (req, res) {
         message: "Post created!"
       });
     }
-    req.flash("success", "Post Created Successfully!");
+    
     if (!post) {
       console.log("Error in creating a post");
       return;
