@@ -5,6 +5,7 @@
     <div>
       <h1>home page/ <%= title %></h1>
       <h4>Posts</h4>
+      <img src="<%= user.avatar %>" alt="" width="100">
       <form action="/posts/create" , id="new-post-form" method="POST">
         <textarea
           name="content"

@@ -1,4 +1,6 @@
 const User = require("../models/user");
+const fs = require("fs");
+const path = require("path");
 
 module.exports.profile = async function (req, res) {
   const user = await User.findById(req.params.id);
@@ -14,24 +16,40 @@ module.exports.profile = async function (req, res) {
 module.exports.update = async function (req, res) {
   try {
     if (req.user.id === req.params.id) {
-      const updatedUser = await User.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-      );
+      const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
       User.uploadedAvatar(req, res, function (err) {
         if (err) {
           console.log("**MulterError", err);
         }
-        updatedUser.name = req.user.name,
-        updatedUser.email = req.user.email
+        (user.name = req.user.name), (user.email = req.user.email);
 
-        if(req.file){
-          //this is saveing the path of the uploded file into the avatar field in the use
-          updatedUser.avatar = User.avatarPath + '/' + req.file.filename
+        if (req.file) {
+          // Check if the request contains a file (req.file is truthy)
+          if (user.avatar) {
+            // Check if the user already has an avatar path stored
+            const avatarPath = path.join(__dirname, "..", user.avatar);
+
+            // Check if the avatar file actually exists before attempting to delete
+            if (fs.existsSync(avatarPath)) {
+              fs.unlinkSync(avatarPath);
+            }
+          }
+
+          // Save the path of the uploaded file into the avatar field in the user object
+          user.avatar = User.avatarPath + "/" + req.file.filename;
+        } else {
+          // Handle the case where no file is present in the request
+          console.error("No file uploaded.");
+
+          // You can also send an error response to the client if applicable
+          // res.status(400).json({ error: 'No file uploaded.' });
+
+          // Optionally, you can take other actions if needed
         }
-        updatedUser.save();
-        return res.redirect('back');
+        user.save();
+        return res.redirect("back");
       });
 
       // if (!updatedUser) {
