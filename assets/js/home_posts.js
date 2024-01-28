@@ -5,7 +5,6 @@
 
     newPostForm.submit(function (e) {
       e.preventDefault();
-
       $.ajax({
         type: "post",
         url: "/posts/create",
@@ -61,9 +60,9 @@
           </form>
  
 
-          <div class="post-comments-list">
+          <div id="post-comments-list">
             <ul id="post-comments-${post._id}">
-              
+           
             </ul>
           </div>
         </div>
@@ -108,9 +107,10 @@
         url: "/comments/create",
         data: newCommentForm.serialize(),
         success: function (data) {
-          console.log(data)
+          console.log("hi", data.data.comment);
           let newComment = newCommentDom(data.data.comment);
-          $("#post-comments-list>ul").prepend(newComment);
+          let commentsContainer = $(`#post-comments-${data.data.comment.post}`);
+          commentsContainer.prepend(newComment);
         },
         error: function (error) {
           console.log("hi", error.responseText);
@@ -121,10 +121,10 @@
 
   // Method to create a comment in DOM
   let newCommentDom = function (comment) {
+    console.log(comment);
     return $(`
     <li>
     <p>
-      
       <small><a href="/comments/destroy/${comment._id}">X</a></small>
       ${comment.content}
       <br />
@@ -135,7 +135,7 @@
   </li>
   `);
   };
-  // createComment();
 
+  // createComment();
   createPost();
 }

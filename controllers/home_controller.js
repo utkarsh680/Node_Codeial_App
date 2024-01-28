@@ -1,5 +1,10 @@
+
 const Post = require("../models/post");
 const User = require('../models/user');
+
+module.exports.redirectToHome = function (request, response) {
+  return response.redirect("/home");
+};
 
 module.exports.home = async function (req, res) {
   try {
