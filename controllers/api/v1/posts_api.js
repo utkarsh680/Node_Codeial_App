@@ -18,15 +18,11 @@ module.exports.index = async function (req, res) {
 module.exports.destroy = async function (req, res) {
   try {
     const postId = req.params.id;
-    console.log(postId);
     const post = await Post.findById(postId);
-    console.log(post);
-
     if (!post) {
       return res.json(404, {
         message: 'Post Not Found'
-      })
-      
+      })   
     }
 
     // Check if the logged-in user is the owner of the post
