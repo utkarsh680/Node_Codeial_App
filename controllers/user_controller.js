@@ -1,10 +1,12 @@
 const User = require("../models/user");
 const fs = require("fs");
 const path = require("path");
+const jwt = require("jsonwebtoken");
+const { resetPasswordMail } = require("../mailers/resetPassword_mailer");
 
 module.exports.profile = async function (req, res) {
   const user = await User.findById(req.params.id);
-  console.log("hello", user);
+  // console.log("hello", user);
   return res.render("user_profile", {
     title: "User Profile",
     profile_user: user,
@@ -128,3 +130,147 @@ module.exports.destroySession = function (req, res) {
     return res.redirect("/users/sign-in");
   });
 };
+
+
+
+// for password reset
+
+module.exports.passwordReset = (req, res, next) => {
+  try {
+    const email = req.body.email;
+    // Generate JWT token
+    const resetToken = generateResetToken(email);
+    const resetLink = `http://localhost:8000/users/reset-password/${resetToken}`;
+    // Send the resetToken to the user (e.g., via email)
+    resetPasswordMail(
+      email,
+      "Password Reset",
+      `Use the following link to reset your password: ${resetLink}`
+    );
+    req.flash("success", "Password reset link sent to you Email");
+  } catch (error) {
+    console.log(err);
+  }
+  return res.redirect("back");
+};
+// Function to generate JWT token
+const generateResetToken = (userEmail) => {
+  const payload = { userEmail };
+  const options = { expiresIn: "1h" }; // Set an expiration time for the token
+  return jwt.sign(payload, secretKey, options);
+};
+
+// password reset link
+exports.passwordResetLink = (req, res) => {
+  const resetToken = req.params.token;
+  // Decode the token for demonstration purposes
+  const decodedToken = decodeResetToken(resetToken);
+  // console.log('decode', decodedToken)
+
+  return res.render("reset_password", {
+    title: "Password Reset",
+    token: resetToken,
+    email: decodedToken.userEmail,
+  });
+};
+
+// Generate a random secret key
+const secretKey = "hellosirhowareyou";
+
+// Function to decode JWT token
+const decodeResetToken = (token) => {
+  try {
+    // Verify the token
+    const decoded = jwt.verify(token, secretKey);
+
+    // 'decoded' will contain the payload information
+    return decoded;
+  } catch (err) {
+    // If the token is invalid or has expired, an error will be thrown
+    console.error(err);
+    return null;
+  }
+};
+
+exports.updatePassword = async (req, res) => {
+  const resetToken = req.params.token;
+
+  // Decode the token for demonstration purposes
+  const decodedToken = decodeResetToken(resetToken);
+
+  if (!decodedToken) {
+    req.flash("error", "invalid link!");
+    return res.redirect("back");
+  }
+  if (req.body.password !== req.body.confirm_password) {
+    req.flash("error", "Please Match the Password!");
+    return res.redirect("back");
+  }
+
+  try {
+   
+    const updatedUser = await User.findOneAndUpdate(
+      {email: decodedToken.userEmail},
+      { password: req.body.password },
+      { new: true }
+    );
+
+
+    if (!updatedUser) {
+      req.flash("error", "Error updating password. User not found.");
+      return res.redirect("back");
+    }
+    // Check if the resetToken property exists before attempting to update it
+    if (updatedUser.resetToken) {
+      // Expire the reset token immediately
+      updatedUser.resetToken.expires = new Date();
+      await updatedUser.save();
+      req.flash("success", "Password reset successfully");
+    }
+
+    
+    return res.redirect("/users/sign-in");
+  } catch (error) {
+    req.flash("error", "Error updating password. Please try again.");
+    return res.redirect("back");
+  } 
+};
+
+exports.forgetPasswordRender = (req, res) => {
+  const user = User.findOne({ email: req.body.email });
+  return res.render("forget_password", {
+    title: "Forgot password",
+    user,
+  });
+};
+
+exports.forgetPassword = async (req, res, next) => {
+  try {
+    const email = req.body.email.toLowerCase();
+    // Check if the email exists in the database
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      req.flash("error", "Email not found!");
+      return res.redirect("back");
+    }
+    // Generate JWT token
+    const resetToken = generateResetToken(email);
+
+    const resetLink = `http://localhost:8000/users/reset-password/${resetToken}`;
+
+    // Send the resetToken to the user (e.g., via email)
+
+    resetPasswordMail(
+      email,
+      "Password Reset",
+      `Use the following link to reset your password: ${resetLink}`
+    );
+    return res.redirect("back");
+  } catch (error) {
+    req.flash("error", " Please try again.");
+    return res.redirect("back");
+  }
+};
+
+

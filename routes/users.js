@@ -32,5 +32,15 @@ passport.authenticate(
 
 router.get('/sign-out', usersController.destroySession);
 
+//reset passowr
+router.post('/resetPassword', usersController.passwordReset);
+router.get('/reset-password/:token', usersController.passwordResetLink);
+
+router.post('/update-password/:token', usersController.updatePassword);
+//forgot password 
+router.post('/forgotPassword', usersController.forgetPassword);
+
+router.get('/forgotPasswordRender', usersController.forgetPasswordRender);
+
 
 module.exports = router;
