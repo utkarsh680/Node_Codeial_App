@@ -1,4 +1,5 @@
-<ul>
+<div class="header">
+  <ul>
     <% if (locals.user){ %>
     <li id="sign-out-button">
       <a href="/users/sign-out">Sign Out</a>
@@ -12,26 +13,27 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       var currentUrl = window.location.href;
-  
+
       if (currentUrl === "http://localhost:8000/users/sign-up") {
         var loginButton = document.getElementById("login-button");
         if (loginButton) {
           loginButton.innerHTML = '<a href="/users/sign-in">Sign-in</a>';
         }
       }
-  
-    //   if (currentUrl === "https://node-authentication-ppvs.onrender.com/users/forgotPasswordRender") {
-    //     var backButton = document.getElementById("sign-out-button");
-    //     if (backButton) {
-    //       backButton.innerHTML = '<a href="/users/sign-in">Back</a>';
-    //     }
-    //   }
-  
-    //   if (currentUrl.includes("https://node-authentication-ppvs.onrender.com/users/reset-password/")) {
-    //     var backButton = document.getElementById("sign-out-button");
-    //     if (backButton) {
-    //       backButton.innerHTML = '<a href="/users/profile">Back</a>';
-    //     }
-    //   }
+
+      //   if (currentUrl === "https://node-authentication-ppvs.onrender.com/users/forgotPasswordRender") {
+      //     var backButton = document.getElementById("sign-out-button");
+      //     if (backButton) {
+      //       backButton.innerHTML = '<a href="/users/sign-in">Back</a>';
+      //     }
+      //   }
+
+      //   if (currentUrl.includes("https://node-authentication-ppvs.onrender.com/users/reset-password/")) {
+      //     var backButton = document.getElementById("sign-out-button");
+      //     if (backButton) {
+      //       backButton.innerHTML = '<a href="/users/profile">Back</a>';
+      //     }
+      //   }
     });
   </script>
+</div>

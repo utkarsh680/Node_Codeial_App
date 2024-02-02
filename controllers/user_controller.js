@@ -25,7 +25,10 @@ module.exports.update = async function (req, res) {
         if (err) {
           console.log("**MulterError", err);
         }
-        (user.name = req.user.name), (user.email = req.user.email);
+        user.name = req.body.name;
+        user.email = req.body.email;
+        user.address = req.body.address;
+        console.log(user.address);
 
         if (req.file) {
           // Check if the request contains a file (req.file is truthy)
@@ -44,22 +47,10 @@ module.exports.update = async function (req, res) {
         } else {
           // Handle the case where no file is present in the request
           console.error("No file uploaded.");
-
-          // You can also send an error response to the client if applicable
-          // res.status(400).json({ error: 'No file uploaded.' });
-
-          // Optionally, you can take other actions if needed
         }
         user.save();
         return res.redirect("back");
       });
-
-      // if (!updatedUser) {
-      //   // User with the given ID not found
-      //   return res.status(404).send("User not found");
-      // }
-
-      // return res.redirect("back");
     } else {
       // User is unauthorized
       req.flash("error", "Unauthorized");
@@ -130,8 +121,6 @@ module.exports.destroySession = function (req, res) {
     return res.redirect("/users/sign-in");
   });
 };
-
-
 
 // for password reset
 
@@ -208,13 +197,11 @@ exports.updatePassword = async (req, res) => {
   }
 
   try {
-   
     const updatedUser = await User.findOneAndUpdate(
-      {email: decodedToken.userEmail},
+      { email: decodedToken.userEmail },
       { password: req.body.password },
       { new: true }
     );
-
 
     if (!updatedUser) {
       req.flash("error", "Error updating password. User not found.");
@@ -228,12 +215,11 @@ exports.updatePassword = async (req, res) => {
       req.flash("success", "Password reset successfully");
     }
 
-    
     return res.redirect("/users/sign-in");
   } catch (error) {
     req.flash("error", "Error updating password. Please try again.");
     return res.redirect("back");
-  } 
+  }
 };
 
 exports.forgetPasswordRender = (req, res) => {
@@ -272,5 +258,3 @@ exports.forgetPassword = async (req, res, next) => {
     return res.redirect("back");
   }
 };
-
-
