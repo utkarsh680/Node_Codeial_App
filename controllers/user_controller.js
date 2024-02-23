@@ -7,7 +7,7 @@ const { resetPasswordMail } = require("../mailers/resetPassword_mailer");
 module.exports.profile = async function (req, res) {
   const user = await User.findById(req.params.id);
   // console.log("hello", user);
-  return res.render("user_profile", {
+  return res.render("user_edit_profile", {
     title: "User Profile",
     profile_user: user,
   });
@@ -18,17 +18,14 @@ module.exports.profile = async function (req, res) {
 module.exports.update = async function (req, res) {
   try {
     if (req.user.id === req.params.id) {
-      const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
+      const user = await User.findById(req.params.id);
+
       User.uploadedAvatar(req, res, function (err) {
         if (err) {
           console.log("**MulterError", err);
         }
-        user.name = req.body.name;
-        user.email = req.body.email;
-        user.address = req.body.address;
-        console.log(user.address);
+        user.name = req.body.name;      
+        console.log("sanam lodu",req.file)
 
         if (req.file) {
           // Check if the request contains a file (req.file is truthy)
@@ -48,12 +45,17 @@ module.exports.update = async function (req, res) {
           // Handle the case where no file is present in the request
           console.error("No file uploaded.");
         }
+        
         user.save();
-        return res.redirect("back");
+        return res.status(200).json({
+          data : {
+            user:user
+          },
+          message: "Profile updated!"
+        });
       });
     } else {
       // User is unauthorized
-      req.flash("error", "Unauthorized");
       return res.status(401).send("Unauthorized");
     }
   } catch (error) {

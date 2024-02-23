@@ -18,6 +18,7 @@ module.exports.home = async function (req, res) {
         path: 'user'
       }
     })
+    console.log(posts);
     const user = await User.find({});
     return res.render("home", {
       title: "Codeial | Home",

@@ -21,7 +21,7 @@
 }
 
 #home-container .box1 .user-profile {
-  height: 40%;
+  height: 43%;
   width: 100%;
   border-bottom: 1px solid lightgrey;
 }
@@ -54,17 +54,23 @@
 }
 
 #home-container .box1 .user-profile .user-profile-value .user-photo {
-  height: 100px;
-  width: 100px;
+  height: 110px;
+  width: 110px;
   border-radius: 50%;
   border: 5px solid #bcbcf2;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #home-container .box1 .user-profile .user-profile-value .user-photo img {
-  height: inherit;
-  width: inherit;
+  height: 100%;
+  width: 100%;
   border-radius: 50%;
+  object-fit: cover;
+  /* Adjusted */
+  align-self: center;
   transition: all 0.4s ease;
 }
 

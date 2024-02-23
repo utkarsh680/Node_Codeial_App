@@ -9,6 +9,7 @@
         type: "post",
         url: "/posts/create",
         data: newPostForm.serialize(),
+       
         success: function (data) {
           new Noty({
             theme: "relax",
@@ -48,21 +49,20 @@
         </div>
         <div class="post-comments">
          
-          <form action="/comments/create" method="POST">
+        <form action="/comments/create" id="new-comment-form" method="POST">
             <input
               type="text"
               name="content"
               placeholder="Type here to add comment..."
             />
             <input type="hidden" name="postId" value="${post._id}" />
-            <input type="hidden" name="userId" value="<%= locals.user._id %>" />
             <input type="submit" value="Add comment" />
           </form>
- 
 
           <div id="post-comments-list">
             <ul id="post-comments-${post._id}">
-           
+            
+  
             </ul>
           </div>
         </div>
@@ -96,32 +96,35 @@
       });
     });
   };
-  let createComment = function () {
-    let newCommentForm = $("#new-comment-form");
+  
+  let createComment = function() {
 
-    newCommentForm.submit(function (e) {
+    // find element with id dynamically from ejs input
+  const postIdValue = $(`#postId`).val();
+  const newCommentForm = $(`#new-comment-form-${postIdValue}`);
+  for (let i = 0; i < newCommentForm.length; i++) {
+ 
+    $(newCommentForm[i]).submit(function(e) {
       e.preventDefault();
-
       $.ajax({
-        type: "post",
-        url: "/comments/create",
-        data: newCommentForm.serialize(),
-        success: function (data) {
-          console.log("hi", data.data.comment);
-          let newComment = newCommentDom(data.data.comment);
-          let commentsContainer = $(`#post-comments-${data.data.comment.post}`);
-          commentsContainer.prepend(newComment);
-        },
-        error: function (error) {
-          console.log("hi", error.responseText);
-        },
+          type: "post",
+          url: newCommentForm.attr('action'),
+          data: newCommentForm.serialize(),
+          success: function(data) {
+              let newComment = newCommentDom(data.data.comment);
+              let postId = data.data.comment.post;
+              let commentsContainer = $(`#post-comments-list #post-comments-${postId}`);
+              commentsContainer.prepend(newComment);
+          },
+          error: function(error) {
+              console.log("Error:", error.responseText);
+          }
       });
-    });
-  };
+  });
+  }
+};
 
-  // Method to create a comment in DOM
   let newCommentDom = function (comment) {
-    console.log(comment);
     return $(`
     <li>
     <p>
@@ -133,9 +136,9 @@
       </small>
     </p>
   </li>
-  `);
+`);
   };
 
-  // createComment();
+  createComment();
   createPost();
 }

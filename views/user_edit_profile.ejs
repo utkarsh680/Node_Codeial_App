@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="/css/user_profile.css" />
-
 <% if (user.id == profile_user.id) { %>
 <div class="user-profile-box">
   <div class="user-image">
@@ -8,10 +7,8 @@
       alt="<%= user.name %>"
       width="200"
       class="profile-image"
+      id="user-avatar"
     />
-    <label for="fileInput" style="cursor: pointer">
-      <i class="fa-solid fa-camera"></i>
-    </label>
   </div>
 
   <!-- if user matches then show the form -->
@@ -20,24 +17,36 @@
     enctype="multipart/form-data"
     method="post"
     class="profile-form"
+    id="edit-profile-form"
+    
   >
     <div class="browse">
       <input
-        type="file"
-        name="avatar"
-        id="fileInput"
-        placeholder="profile picture"
-        style="display: none"
+      style="margin-top: 30px"
+      type="file"
+      name="filepond"
+      class="filepond"
+      id="profile-file"
+      placeholder="Profile Picture"
       />
     </div>
+    <input
+      id="local_user_id"
+      type="hidden"
+      name="id"
+      placeholder="Your id"
+      value="<%= locals.user._id %>"
+    />
     <div class="input-value">
       <div id="text-input">
         <input
           type="text"
           name="name"
           placeholder="your name"
+          id="name-input"
           value="<%= profile_user.name %>"
           required
+          autofocus
         />
         <img
           src="https://cdn-icons-png.flaticon.com/512/1077/1077012.png"
@@ -49,9 +58,11 @@
         <input
           type="email"
           name="email"
+          id="email-input"
           placeholder="your email"
           value="<%= profile_user.email %>"
           required
+          disabled
         />
         <img
           src="https://cdn-icons-png.flaticon.com/512/732/732200.png"
@@ -65,6 +76,7 @@
           name="address"
           placeholder="dist, state"
           maxlength="30"
+          id="address-input"h
           value="<%= profile_user.address %>"
         />
         <img
@@ -75,6 +87,11 @@
       <div id="submit-input">
         <button id="btnSubmit">Update</button>
       </div>
+
+      <div class="back-homeButton">
+        <i class="fa-solid fa-arrow-left"></i>
+        <a href="http://localhost:8000/home" class="back">Go back to Home</a>
+      </div>
     </div>
   </form>
   <% } else {%>
@@ -84,8 +101,20 @@
     <p>Email: <%= profile_user.email %></p>
   </div>
   <% } %>
-  <div class="back-homeButton">
-    <i class="fa-solid fa-arrow-left"></i>
-    <a href="http://localhost:8000/home" class="back">Go back to Home</a>
-  </div>
 </div>
+
+<script>
+  // Get a reference to the file input element
+  const inputElement = document.querySelector('input[type="file"]');
+
+  // Register the necessary FilePond plugins
+  FilePond.registerPlugin(
+    FilePondPluginImagePreview,
+    // FilePondPluginImageResize,
+    // FilePondPluginImageCrop
+  );
+
+  // Create a FilePond instance with desired configuration options
+  const pond = FilePond.create(inputElement);
+</script>
+<script src="/js/user_edit_profile.js"></script>
